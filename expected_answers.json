@@ -1,0 +1,482 @@
+{
+  "meta": {
+    "set": "dev_batch_1",
+    "held_out": false,
+    "defaultAsOf": "2026-09-19",
+    "rules": "RESOLVER_RULES.md",
+    "statuses": [
+      "supported",
+      "contextual",
+      "conflicting",
+      "superseded",
+      "insufficient"
+    ]
+  },
+  "questions": [
+    {
+      "id": "q01",
+      "cluster": "max_projects",
+      "query": {
+        "subject": "platform",
+        "attribute": "max_projects",
+        "scope": "all",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "supported",
+        "answers": [
+          {
+            "scope": "all",
+            "value": 100,
+            "claims": [
+              "claim-c01",
+              "claim-c02"
+            ]
+          }
+        ],
+        "excluded": {},
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q02",
+      "cluster": "timeout_s",
+      "query": {
+        "subject": "platform",
+        "attribute": "timeout_s",
+        "scope": "all",
+        "asOf": "2026-06-01"
+      },
+      "expected": {
+        "status": "superseded",
+        "answers": [
+          {
+            "scope": "all",
+            "value": 60,
+            "claims": [
+              "claim-c04"
+            ]
+          }
+        ],
+        "excluded": {
+          "claim-c03": "superseded_by:claim-c04"
+        },
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q03",
+      "cluster": "timeout_s",
+      "query": {
+        "subject": "platform",
+        "attribute": "timeout_s",
+        "scope": "all",
+        "asOf": "2026-02-01"
+      },
+      "expected": {
+        "status": "supported",
+        "answers": [
+          {
+            "scope": "all",
+            "value": 30,
+            "claims": [
+              "claim-c03"
+            ]
+          }
+        ],
+        "excluded": {},
+        "ineligible": [
+          "claim-c04"
+        ],
+        "reason": null
+      }
+    },
+    {
+      "id": "q04",
+      "cluster": "rate_limit_rps",
+      "query": {
+        "subject": "platform",
+        "attribute": "rate_limit_rps",
+        "scope": "all",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "superseded",
+        "answers": [
+          {
+            "scope": "all",
+            "value": 50,
+            "claims": [
+              "claim-c07"
+            ]
+          }
+        ],
+        "excluded": {
+          "claim-c05": "superseded_by:claim-c06",
+          "claim-c06": "superseded_by:claim-c07"
+        },
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q05",
+      "cluster": "rate_limit_rps",
+      "query": {
+        "subject": "platform",
+        "attribute": "rate_limit_rps",
+        "scope": "all",
+        "asOf": "2026-05-01"
+      },
+      "expected": {
+        "status": "superseded",
+        "answers": [
+          {
+            "scope": "all",
+            "value": 20,
+            "claims": [
+              "claim-c06"
+            ]
+          }
+        ],
+        "excluded": {
+          "claim-c05": "superseded_by:claim-c06"
+        },
+        "ineligible": [
+          "claim-c07"
+        ],
+        "reason": null
+      }
+    },
+    {
+      "id": "q06",
+      "cluster": "max_items",
+      "query": {
+        "subject": "platform",
+        "attribute": "max_items",
+        "scope": "all",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "contextual",
+        "answers": [
+          {
+            "scope": "new_configurations",
+            "value": 500,
+            "claims": [
+              "claim-c08"
+            ]
+          },
+          {
+            "scope": "legacy_configurations",
+            "value": 100,
+            "claims": [
+              "claim-c09"
+            ]
+          }
+        ],
+        "excluded": {},
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q07",
+      "cluster": "max_items",
+      "query": {
+        "subject": "platform",
+        "attribute": "max_items",
+        "scope": "legacy_configurations",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "supported",
+        "answers": [
+          {
+            "scope": "legacy_configurations",
+            "value": 100,
+            "claims": [
+              "claim-c09"
+            ]
+          }
+        ],
+        "excluded": {},
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q08",
+      "cluster": "max_items",
+      "query": {
+        "subject": "platform",
+        "attribute": "max_items",
+        "scope": "new_configurations",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "supported",
+        "answers": [
+          {
+            "scope": "new_configurations",
+            "value": 500,
+            "claims": [
+              "claim-c08"
+            ]
+          }
+        ],
+        "excluded": {},
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q09",
+      "cluster": "retention_days",
+      "query": {
+        "subject": "platform",
+        "attribute": "retention_days",
+        "scope": "all",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "conflicting",
+        "answers": [
+          {
+            "scope": "all",
+            "value": 30,
+            "claims": [
+              "claim-c10"
+            ]
+          },
+          {
+            "scope": "all",
+            "value": 90,
+            "claims": [
+              "claim-c11"
+            ]
+          }
+        ],
+        "excluded": {},
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q10",
+      "cluster": "payload_mb",
+      "query": {
+        "subject": "platform",
+        "attribute": "payload_mb",
+        "scope": "enterprise",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "conflicting",
+        "answers": [
+          {
+            "scope": "enterprise",
+            "value": 25,
+            "claims": [
+              "claim-c13"
+            ]
+          },
+          {
+            "scope": "enterprise",
+            "value": 15,
+            "claims": [
+              "claim-c14"
+            ]
+          }
+        ],
+        "excluded": {
+          "claim-c12": "overridden_by_narrower_scope:enterprise"
+        },
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q11",
+      "cluster": "payload_mb",
+      "query": {
+        "subject": "platform",
+        "attribute": "payload_mb",
+        "scope": "free",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "supported",
+        "answers": [
+          {
+            "scope": "all",
+            "value": 10,
+            "claims": [
+              "claim-c12"
+            ]
+          }
+        ],
+        "excluded": {},
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q12",
+      "cluster": "webhook_retries",
+      "query": {
+        "subject": "platform",
+        "attribute": "webhook_retries",
+        "scope": "new_configurations",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "superseded",
+        "answers": [
+          {
+            "scope": "new_configurations",
+            "value": 5,
+            "claims": [
+              "claim-c16"
+            ]
+          }
+        ],
+        "excluded": {
+          "claim-c15": "superseded_by:claim-c16"
+        },
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q13",
+      "cluster": "webhook_retries",
+      "query": {
+        "subject": "platform",
+        "attribute": "webhook_retries",
+        "scope": "legacy_configurations",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "supported",
+        "answers": [
+          {
+            "scope": "all",
+            "value": 3,
+            "claims": [
+              "claim-c15"
+            ]
+          }
+        ],
+        "excluded": {},
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q14",
+      "cluster": "sso_seats",
+      "query": {
+        "subject": "platform",
+        "attribute": "sso_seats",
+        "scope": "free",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "insufficient",
+        "answers": [],
+        "excluded": {},
+        "ineligible": [],
+        "reason": "no_applicable_claim"
+      }
+    },
+    {
+      "id": "q15",
+      "cluster": "sso_seats",
+      "query": {
+        "subject": "platform",
+        "attribute": "sso_seats",
+        "scope": "enterprise",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "supported",
+        "answers": [
+          {
+            "scope": "enterprise",
+            "value": 50,
+            "claims": [
+              "claim-c17"
+            ]
+          }
+        ],
+        "excluded": {},
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q16",
+      "cluster": "audit_days",
+      "query": {
+        "subject": "platform",
+        "attribute": "audit_days",
+        "scope": "all",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "insufficient",
+        "answers": [],
+        "excluded": {},
+        "ineligible": [
+          "claim-c18"
+        ],
+        "reason": "not_yet_effective"
+      }
+    },
+    {
+      "id": "q17",
+      "cluster": "audit_days",
+      "query": {
+        "subject": "platform",
+        "attribute": "audit_days",
+        "scope": "all",
+        "asOf": "2027-02-01"
+      },
+      "expected": {
+        "status": "supported",
+        "answers": [
+          {
+            "scope": "all",
+            "value": 365,
+            "claims": [
+              "claim-c18"
+            ]
+          }
+        ],
+        "excluded": {},
+        "ineligible": [],
+        "reason": null
+      }
+    },
+    {
+      "id": "q18",
+      "cluster": "max_users",
+      "query": {
+        "subject": "platform",
+        "attribute": "max_users",
+        "scope": "all",
+        "asOf": "2026-09-19"
+      },
+      "expected": {
+        "status": "insufficient",
+        "answers": [],
+        "excluded": {},
+        "ineligible": [],
+        "reason": "no_claims"
+      }
+    }
+  ]
+}
