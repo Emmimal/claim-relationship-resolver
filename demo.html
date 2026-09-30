@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Claim Relationship Resolver — Live Examples</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔗</text></svg>">
+<style>
+  :root {
+    --bg:#0d1117; --panel:#161b22; --border:#30363d; --text:#e6edf3; --muted:#8b949e;
+    --accent:#3fb950; --bad:#f85149; --neutral:#58a6ff; --code-bg:#010409;
+    box-sizing:border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg:#ffffff; --panel:#f6f8fa; --border:#d0d7de; --text:#1f2328; --muted:#57606a;
+      --accent:#1a7f37; --bad:#cf222e; --neutral:#0969da; --code-bg:#f6f8fa;
+    }
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  * { box-sizing: border-box; }
+  body {
+    margin:0; background:var(--bg); color:var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height:1.5;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 28px 20px 48px; }
+  header { margin-bottom: 28px; }
+  h1 { font-size: 1.5rem; margin: 0 0 6px; }
+  .sub { color: var(--muted); font-size: 0.95rem; }
+  .note {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px 16px; margin: 18px 0; font-size: 0.9rem; color: var(--muted);
+  }
+  .note b { color: var(--text); }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 20px; margin: 18px 0;
+  }
+  .tag {
+    display:inline-block; font-size: 0.75rem; color: var(--muted);
+    border: 1px solid var(--border); border-radius: 999px; padding: 2px 10px; margin-bottom: 10px;
+  }
+  .q { font-size: 1.02rem; font-weight: 600; margin: 0 0 14px; }
+  .row { display:flex; gap:10px; align-items:flex-start; padding: 7px 0; border-top: 1px solid var(--border); }
+  .row:first-of-type { border-top: none; }
+  .who { flex: 0 0 150px; font-size: 0.85rem; color: var(--muted); padding-top: 2px; }
+  .ans-wrap { flex: 1; min-width: 0; }
+  .ans {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92rem;
+    padding: 2px 8px; border-radius: 5px; display: inline-block; background: var(--code-bg);
+  }
+  .ans.resolver { color: var(--accent); border: 1px solid var(--accent); }
+  .ans.wrong { color: var(--bad); }
+  .ans.ok { color: var(--accent); }
+  .why { font-size: 0.82rem; color: var(--muted); margin-top: 3px; }
+  table { width:100%; border-collapse: collapse; margin-top: 6px; font-size: 0.9rem; }
+  th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--muted); font-weight: 500; }
+  td.win { color: var(--accent); font-weight: 600; }
+  footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Claim Relationship Resolver — Live Examples</h1>
+    <div class="sub">Sanity Challenge, Path One. Every example below is real output from my resolver,
+      run against real data (my own TDS submission history and blog sitemap) — not invented for this page.</div>
+  </header>
+
+  <div class="note">
+    Two claims can look different without disagreeing, or agree in wording while genuinely
+    conflicting. Four systems answer each question below: my <b>resolver</b> (deterministic,
+    no LLM), <b>B_newest</b> (newest claim wins), <b>B+scope</b> (newest claim wins within the
+    matching scope), and <b>A_retrieval</b> (plain BM25 keyword search).
+  </div>
+
+  <div id="cards"></div>
+
+  <div class="card">
+    <div class="tag">Controlled benchmark — 404 questions, blind-audited, run live against Sanity</div>
+    <table>
+      <tr><th>Ground truth</th><th>n</th><th>resolver</th><th>B_newest</th><th>B+scope</th><th>A_retrieval</th></tr>
+      <tr><td>supported</td><td>175</td><td class="win">175</td><td>107</td><td>175</td><td>113</td></tr>
+      <tr><td>superseded</td><td>39</td><td class="win">39</td><td>25</td><td>25</td><td>12</td></tr>
+      <tr><td>contextual</td><td>40</td><td class="win">40</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>conflicting</td><td>50</td><td class="win">50</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>insufficient</td><td>76</td><td class="win">76</td><td>44</td><td>76</td><td>0</td></tr>
+    </table>
+    <div class="why" style="margin-top:10px;">
+      380/380 correct overall, 0 false conflicts, 0 missed conflicts. This set is synthetic by
+      design (so ground truth is known for certain) and was blind-audited by me before I saw the
+      generated answers. The examples above this table are real data, run through the same code.
+    </div>
+  </div>
+
+  <footer>
+    Full code, the 404-question benchmark, the blind audit, and the live Sanity integration are
+    in the GitHub repo linked in the DEV post this page accompanies.
+  </footer>
+</div>
+
+<script>
+const EXAMPLES = [
+  {
+    tag: "Real data — my TDS Contributor Portal, 36 articles",
+    q: "What's the status across my whole article portfolio?",
+    resolver: "CONTEXTUAL across 34 scopes — status varies by article",
+    baselines: [
+      { who: "B_newest (recency only)", ans: "submitted", ok:false, why: "picks whichever single article was most recently submitted, ignoring the other 33" },
+      { who: "B+scope (recency + scope)", ans: "none", ok:false, why: "finds no claim scoped to the whole portfolio, so it comes up empty" },
+      { who: "A_retrieval (BM25 keyword search)", ans: "published", ok:false, why: "picks whichever article's text happens to score highest, arbitrarily" },
+    ]
+  },
+  {
+    tag: "Real data — a specific published article",
+    q: "What's the status of \u201cCoding Agents Don\u2019t Need Longer History\u201d?",
+    resolver: "published",
+    baselines: [
+      { who: "B_newest", ans: "submitted", ok:false, why: "wrong \u2014 answers with my most recent submission overall, regardless of which article was asked about" },
+      { who: "B+scope", ans: "published", ok:true, why: "correct here" },
+      { who: "A_retrieval", ans: "published", ok:true, why: "correct here" },
+    ]
+  },
+  {
+    tag: "Real data — a Draft article with no submission date on record",
+    q: "What's the status of this specific draft article?",
+    resolver: "INSUFFICIENT \u2014 no eligible claim (no date on record)",
+    baselines: [
+      { who: "B_newest", ans: "submitted", ok:false, why: "wrong \u2014 guesses my most recent submission regardless" },
+      { who: "B+scope", ans: "none", ok:true, why: "also abstains here, though for a different reason (no scope match, not date-awareness)" },
+      { who: "A_retrieval", ans: "draft", ok:false, why: "right by coincidence \u2014 closest keyword match, not because it checked eligibility" },
+    ]
+  },
+  {
+    tag: "Real data — my EmiTechLogic blog sitemap, 20 pages",
+    q: "How many images are on my blog overall?",
+    resolver: "CONTEXTUAL across 20 scopes — image count varies by page",
+    baselines: [
+      { who: "B_newest", ans: "7", ok:false, why: "picks whichever page was updated most recently" },
+      { who: "B+scope", ans: "none", ok:false, why: "no claim scoped to the whole blog" },
+      { who: "A_retrieval", ans: "7", ok:false, why: "same page wins the keyword match, coincidentally" },
+    ]
+  },
+  {
+    tag: "Real data — a specific blog page",
+    q: "How many images are on the ML technical-debt article?",
+    resolver: "4",
+    baselines: [
+      { who: "B_newest", ans: "7", ok:false, why: "wrong \u2014 answers with my most recently updated page's image count instead" },
+      { who: "B+scope", ans: "4", ok:true, why: "correct here" },
+      { who: "A_retrieval", ans: "4", ok:true, why: "correct here" },
+    ]
+  },
+];
+
+const root = document.getElementById("cards");
+EXAMPLES.forEach(ex => {
+  const card = document.createElement("div");
+  card.className = "card";
+  const baselineRows = ex.baselines.map(b => `
+    <div class="row">
+      <div class="who">${b.who}</div>
+      <div class="ans-wrap">
+        <span class="ans ${b.ok ? "ok" : "wrong"}">${b.ans}</span>
+        <div class="why">${b.why}</div>
+      </div>
+    </div>`).join("");
+  card.innerHTML = `
+    <div class="tag">${ex.tag}</div>
+    <div class="q">${ex.q}</div>
+    <div class="row">
+      <div class="who">resolver</div>
+      <div class="ans-wrap"><span class="ans resolver">${ex.resolver}</span></div>
+    </div>
+    ${baselineRows}
+  `;
+  root.appendChild(card);
+});
+</script>
+</body>
+</html>
